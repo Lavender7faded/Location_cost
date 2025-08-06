@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Сборка Grafana-ссылки</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: sans-serif; background: #f5f6fa; margin: 0; padding: 0; }
+    .container { max-width: 700px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px #0001; padding: 32px; }
+    h2 { margin-top: 0; }
+    label { font-weight: bold; display: block; margin-bottom: 6px; }
+    textarea, input, .output { width: 100%; font-size: 15px; border-radius: 7px; border: 1px solid #ddd; margin-bottom: 20px; padding: 8px; resize: vertical; }
+    .output { background: #f0f0f0; min-height: 48px; word-break: break-all; }
+    button { background: #2764ff; color: #fff; border: none; border-radius: 7px; padding: 10px 24px; font-size: 15px; cursor: pointer; }
+    button:active { background: #163c99; }
+    .footer { text-align: right; font-size: 12px; color: #888; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Сборка Grafana-ссылки</h2>
+    <label for="input">Вставьте параметры (каждый с новой строки):</label>
+    <textarea id="input" rows="10" placeholder="&var-source_id=2071697
+&var-source_id=2191692
+..."></textarea>
+    <button onclick="buildLink()">Собрать ссылку</button>
+    <label for="output">Результат:</label>
+    <div class="output" id="output"></div>
+    <button onclick="copyLink()">Скопировать</button>
+    <div class="footer">by ChatGPT · 2025</div>
+  </div>
+  <script>
+    const BASE = "https://grafana.prod.processing-prod.espressoresearch.com/d/accd8d0d-15e1-4f81-b10d-44fd7d2be6d1/sources-metrics3a-request-count-and-traffic?orgId=1";
+    const FROM = "&from=1751317200000";
+    const TO = "&to=1753995599000";
+
+    function buildLink() {
+      let input = document.getElementById('input').value;
+      let params = input
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line.startsWith('&var-source_id='));
+      let result = BASE;
+      if (params.length > 0) result += params.join('');
+      result += FROM + TO;
+      document.getElementById('output').textContent = result;
+    }
+
+    function copyLink() {
+      let output = document.getElementById('output').textContent;
+      if (!output) return;
+      navigator.clipboard.writeText(output);
+    }
+  </script>
+</body>
+</html>
